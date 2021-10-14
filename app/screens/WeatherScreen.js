@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
     ImageBackground,
     View,
@@ -7,68 +7,44 @@ import {
     Text,
     Image,
 } from "react-native";
-import CityButton from "../components/CityButton";
+import CustomBtn from "../components/CustomButton";
+import { weatherIcons } from "../config/images"
+import { cities } from "../config/cityCoords"
 
-const WeatherScreen = (props) => {
-    const [city, setCity] = useState("Select City");
-    const [temperature, setTemperature] = useState("");
-    const [weatherIcon, setWeatherIcon] = useState("");
+const WeatherScreen = ({ navigation }) => {
+    const [weatherInfo, setWeatherInfo] = useState({
+        city: "Select City",
+        temperature: "",
+        weatherIcon: "",
+        feelsLike: "",
+        windSpeed: "",
+        humidity: ""
+    })
 
-    const getCityTime = (cityTimezone) => {
-        const date = new Date();
+    const [response, setResponse] = useState({})
 
-        var cityTime =
-            date.getTime() + date.getTimezoneOffset() * 60000 + 1000 * cityTimezone;
-
-        return new Date(cityTime);
-    };
-
-    const handleCityChange = (city) => {
+    const handleCityChange = useCallback((city) => {
         fetch(
-            `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=5986519938818cdd303826b71e5757dd`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${cities[city].lat}&lon=${cities[city].lon}&exclude=minutely,hourly,alerts&units=metric&appid=5986519938818cdd303826b71e5757dd`
         )
             .then((response) => response.json())
             .then((data) => {
-                setCity(data.name);
-                setTemperature(Math.floor(data.main.temp) + "°C");
-                console.log(data);
-
-                switch (data.weather[0].main) {
-                    case "Clear":
-                        {
-                            const cityTime = getCityTime(data.timezone);
-                            if (cityTime.getHours() > 6) {
-                                setWeatherIcon(require("../assets/weatherIcons/Sunny.png"));
-                            } else if (cityTime.getHours() > 18 || cityTime.getHours() >= 0) {
-                                setWeatherIcon(
-                                    require("../assets/weatherIcons/QuietNight.png")
-                                );
-                            }
-                        }
-                        break;
-                    case "Clouds":
-                        setWeatherIcon(require("../assets/weatherIcons/Cloudy.png"));
-                        break;
-                    case "Fog":
-                        setWeatherIcon(require("../assets/weatherIcons/Foggy.png"));
-                        break;
-                    case "Snow":
-                        setWeatherIcon(require("../assets/weatherIcons/Snowing.png"));
-                        break;
-                    case "Rain":
-                        setWeatherIcon(require("../assets/weatherIcons/HeavyRain.png"));
-                        break;
-                    case "Drizzle":
-                        setWeatherIcon(require("../assets/weatherIcons/LightRain.png"));
-                        break;
-                    case "Thunderstorm":
-                        setWeatherIcon(require("../assets/weatherIcons/Thunder.png"));
-                        break;
-                    default:
-                        setWeatherIcon(require("../assets/weatherIcons/Sunny.png"));
-                }
+                setWeatherInfo({
+                    city: city,
+                    temperature: Math.floor(data.current.temp) + "°C",
+                    weatherIcon: weatherIcons[data.current.weather[0].main],
+                    feelsLike: "Feels like: " + Math.floor(data.current.feels_like) + "°C",
+                    windSpeed: "Wind Speed: " + Math.floor(data.current.wind_speed) + " km/h",
+                    humidity: "Humidity: " + data.current.humidity + "%"
+                });
+                setResponse(data)
             });
-    };
+    }, []);
+
+    let output = []
+    if (weatherInfo.city != "Select City") {
+        output.push(<CustomBtn text="View More" onPress={() => navigation.navigate('SevenDayWeatherScreen', { response })} />)
+    }
 
     return (
         <ImageBackground
@@ -76,26 +52,38 @@ const WeatherScreen = (props) => {
             source={require("../assets/weatherBackgrounds/Sunny.jpg")}
         >
             <View style={styles.citySelection}>
-                <CityButton
+                <CustomBtn
                     text="Tbilisi"
                     onPress={() => handleCityChange("Tbilisi")}
                 />
 
-                <CityButton
+                <CustomBtn
                     text="Kutaisi"
                     onPress={() => handleCityChange("Kutaisi")}
                 />
 
-                <CityButton
+                <CustomBtn
                     text="Batumi"
                     onPress={() => handleCityChange("Batumi")}
                 />
             </View>
 
             <View style={styles.weatherDisplay}>
-                <Text style={styles.cityText}>{city}</Text>
-                <Text style={styles.temperatureText}>{temperature}</Text>
-                <Image style={styles.weatherIcon} source={weatherIcon} />
+                <View style={styles.topBar}>
+                    <Text style={styles.cityText}>{weatherInfo.city}</Text>
+                    <Text style={styles.temperatureText}>{weatherInfo.temperature}</Text>
+                    <Image style={styles.weatherIcon} source={weatherInfo.weatherIcon} />
+                </View>
+
+                <View>
+                    {output}
+                </View>
+
+                <View style={styles.bottomBar}>
+                    <Text style={styles.smallInfo}>{weatherInfo.feelsLike}</Text>
+                    <Text style={styles.smallInfo}>{weatherInfo.windSpeed}</Text>
+                    <Text style={styles.smallInfo}>{weatherInfo.humidity}</Text>
+                </View>
             </View>
         </ImageBackground>
     );
@@ -130,13 +118,34 @@ const styles = StyleSheet.create({
     weatherDisplay: {
         flexDirection: "column",
         alignItems: "center",
+        height: "100%",
+        justifyContent: "space-between"
     },
 
     weatherIcon: {
         marginTop: 50,
         resizeMode: "contain",
         height: 100,
+        width: 300,
     },
+
+    topBar: {
+        flexDirection: "column",
+        alignItems: "center",
+    },
+
+    bottomBar: {
+        width: "100%",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-evenly",
+        marginBottom: 200,
+    },
+
+    smallInfo: {
+        color: "white",
+        fontSize: 20
+    }
 });
 
 export default WeatherScreen;

@@ -4,6 +4,7 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WeatherScreen from "./app/screens/WeatherScreen";
 import { StatusBar } from "react-native";
+import SevenDayWeatherScreen from "./app/screens/SevenDayWeatherScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,11 @@ export default function App() {
         <Stack.Screen
           name="Weather"
           component={WeatherScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SevenDayWeatherScreen"
+          component={SevenDayWeatherScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

@@ -1,18 +1,18 @@
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-function CityButton({ text, onPress }) {
+function CustomButton({ text, onPress }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <View style={styles.cityBtn}>
-        <Text styles={styles.cityBtnText}>{text}</Text>
+      <View style={styles.customBtn}>
+        <Text styles={styles.customBtnText}>{text}</Text>
       </View>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  cityBtn: {
+  customBtn: {
     paddingLeft: 25,
     paddingRight: 25,
     paddingTop: 10,
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CityButton;
+export default CustomButton;

@@ -63,8 +63,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(120, 120, 120, 0.5)",
     alignItems: "center",
     justifyContent: "center",
-    height: 50,
-    width: "100%",
+    height: 40,
+    width: 150,
+    overflow: "hidden",
+    borderRadius: 25,
+    alignSelf: "center",
+    marginBottom: 80
   },
 });
 
