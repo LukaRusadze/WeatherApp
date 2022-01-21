@@ -5,11 +5,13 @@ import {
     StyleSheet,
     StatusBar,
     Text,
-    Image,
+    SafeAreaView
 } from "react-native";
 import CustomBtn from "../components/CustomButton";
+import WeatherDetails from "../components/WeatherDetails";
+import WeatherDisplay from '../components/WeatherDisplay'
 import { weatherIcons } from "../config/images"
-import { cities } from "../config/cityCoords"
+import { getWeatherData } from "../services/weatherAPI";
 
 const WeatherScreen = ({ navigation }) => {
     const [weatherInfo, setWeatherInfo] = useState({
@@ -23,27 +25,19 @@ const WeatherScreen = ({ navigation }) => {
 
     const [response, setResponse] = useState({})
 
-    const handleCityChange = useCallback((city) => {
-        fetch(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${cities[city].lat}&lon=${cities[city].lon}&exclude=minutely,hourly,alerts&units=metric&appid=5986519938818cdd303826b71e5757dd`
-        )
-            .then((response) => response.json())
-            .then((data) => {
-                setWeatherInfo({
-                    city: city,
-                    temperature: Math.floor(data.current.temp) + "°C",
-                    weatherIcon: weatherIcons[data.current.weather[0].main],
-                    feelsLike: "Feels like: " + Math.floor(data.current.feels_like) + "°C",
-                    windSpeed: "Wind Speed: " + Math.floor(data.current.wind_speed) + " km/h",
-                    humidity: "Humidity: " + data.current.humidity + "%"
-                });
-                setResponse(data)
-            });
-    }, []);
+    const handleCityChange = async (city) => {
+        const { data } = await getWeatherData(city)
 
-    let output = []
-    if (weatherInfo.city != "Select City") {
-        output.push(<CustomBtn text="View More" onPress={() => navigation.navigate('SevenDayWeatherScreen', { response })} />)
+        setWeatherInfo({
+            city: city,
+            temperature: Math.floor(data.current.temp) + "°C",
+            weatherIcon: weatherIcons[data.current.weather[0].main],
+            feelsLike: "Feels like: " + Math.floor(data.current.feels_like) + "°C",
+            windSpeed: "Wind Speed: " + Math.floor(data.current.wind_speed) + " km/h",
+            humidity: "Humidity: " + data.current.humidity + "%"
+        });
+
+        setResponse(data)
     }
 
     return (
@@ -51,7 +45,7 @@ const WeatherScreen = ({ navigation }) => {
             style={styles.background}
             source={require("../assets/weatherBackgrounds/Sunny.jpg")}
         >
-            <View style={styles.citySelection}>
+            <SafeAreaView style={styles.citySelection}>
                 <CustomBtn
                     text="Tbilisi"
                     onPress={() => handleCityChange("Tbilisi")}
@@ -66,24 +60,20 @@ const WeatherScreen = ({ navigation }) => {
                     text="Batumi"
                     onPress={() => handleCityChange("Batumi")}
                 />
-            </View>
+            </SafeAreaView>
 
-            <View style={styles.weatherDisplay}>
-                <View style={styles.topBar}>
-                    <Text style={styles.cityText}>{weatherInfo.city}</Text>
-                    <Text style={styles.temperatureText}>{weatherInfo.temperature}</Text>
-                    <Image style={styles.weatherIcon} source={weatherInfo.weatherIcon} />
-                </View>
+            <View style={styles.weatherContainer}>
 
-                <View>
-                    {output}
-                </View>
+                <WeatherDisplay weatherInfo={weatherInfo} />
 
-                <View style={styles.bottomBar}>
-                    <Text style={styles.smallInfo}>{weatherInfo.feelsLike}</Text>
-                    <Text style={styles.smallInfo}>{weatherInfo.windSpeed}</Text>
-                    <Text style={styles.smallInfo}>{weatherInfo.humidity}</Text>
-                </View>
+                {weatherInfo.city != "Select City" ?
+                    <CustomBtn
+                        text="View More"
+                        onPress={() => navigation.navigate('SevenDayWeatherScreen', { response })} /> :
+                    <></>}
+
+                <WeatherDetails weatherInfo={weatherInfo} />
+
             </View>
         </ImageBackground>
     );
@@ -91,9 +81,8 @@ const WeatherScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     background: {
-        height: "100%",
         alignItems: "center",
-        flexDirection: "column",
+        flex: 1,
     },
 
     citySelection: {
@@ -103,49 +92,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
 
-    cityText: {
-        color: "white",
-        fontSize: 35,
-        marginTop: 30,
-    },
-
-    temperatureText: {
-        color: "white",
-        fontSize: 20,
-        marginTop: 10,
-    },
-
-    weatherDisplay: {
-        flexDirection: "column",
+    weatherContainer: {
         alignItems: "center",
-        height: "100%",
-        justifyContent: "space-between"
-    },
-
-    weatherIcon: {
-        marginTop: 50,
-        resizeMode: "contain",
-        height: 100,
-        width: 300,
-    },
-
-    topBar: {
-        flexDirection: "column",
-        alignItems: "center",
-    },
-
-    bottomBar: {
-        width: "100%",
-        flexDirection: "column",
-        alignItems: "center",
+        flexGrow: 1,
         justifyContent: "space-evenly",
-        marginBottom: 200,
     },
-
-    smallInfo: {
-        color: "white",
-        fontSize: 20
-    }
 });
 
 export default WeatherScreen;

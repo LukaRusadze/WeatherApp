@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import WelcomeScreen from "./app/screens/WelcomeScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WeatherScreen from "./app/screens/WeatherScreen";
-import { StatusBar } from "react-native";
+import { Platform, StatusBar } from "react-native";
 import SevenDayWeatherScreen from "./app/screens/SevenDayWeatherScreen";
 
 const Stack = createNativeStackNavigator();
@@ -14,21 +14,25 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{
+        headerShown: false,
+        headerTransparent: true,
+        headerTitleStyle: {
+          color: "white"
+        }
+      }}>
         <Stack.Screen
           name="Welcome"
           component={WelcomeScreen}
-          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Weather"
           component={WeatherScreen}
-          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SevenDayWeatherScreen"
           component={SevenDayWeatherScreen}
-          options={{ headerShown: false }}
+          options={Platform.OS === "ios" ? { headerShown: true } : ""}
         />
       </Stack.Navigator>
     </NavigationContainer>

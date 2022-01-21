@@ -7,7 +7,7 @@
     "icon": "./app/assets/icon.png",
     "splash": {
       "image": "./app/assets/splash.jpg",
-      "resizeMode": "contain"
+      "resizeMode": "cover"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -18,12 +18,7 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./app/assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
+    "android": {},
     "web": {
       "favicon": "./app/assets/favicon.png"
     }
