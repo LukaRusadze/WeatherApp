@@ -26,7 +26,6 @@ const WeatherScreen = ({ navigation }) => {
 
         dispatch(setWeatherInfo({ city, data }))
 
-
         setResponse(data)
     }
 
@@ -59,7 +58,7 @@ const WeatherScreen = ({ navigation }) => {
                 {weatherInfo.city != "Select City" ?
                     <CustomBtn
                         text="View More"
-                        onPress={() => navigation.navigate('SevenDayWeatherScreen', { response })} /> :
+                        onPress={() => navigation.navigate('SevenDayWeatherScreen', { response, title: weatherInfo.city })} /> :
                     <></>}
 
                 <WeatherDetails weatherInfo={weatherInfo} />

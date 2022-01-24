@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import WeatherScreen from "./app/screens/WeatherScreen";
 import { Platform, StatusBar } from "react-native";
 import SevenDayWeatherScreen from "./app/screens/SevenDayWeatherScreen";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./app/store";
 
 const Stack = createNativeStackNavigator();
@@ -20,9 +20,11 @@ export default function App() {
         <Stack.Navigator screenOptions={{
           headerShown: false,
           headerTransparent: true,
+          headerTitleAlign: 'center',
+          headerLeft: () => Platform.OS === "ios" ? null : true,
           headerTitleStyle: {
-            color: "white"
-          }
+            color: "white",
+          },
         }}>
           <Stack.Screen
             name="Welcome"
@@ -35,7 +37,7 @@ export default function App() {
           <Stack.Screen
             name="SevenDayWeatherScreen"
             component={SevenDayWeatherScreen}
-            options={{ headerShown: Platform.OS == "ios" }}
+            options={{ headerShown: true }}
           />
         </Stack.Navigator>
       </NavigationContainer>
