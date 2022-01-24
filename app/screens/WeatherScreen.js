@@ -10,32 +10,22 @@ import {
 import CustomBtn from "../components/CustomButton";
 import WeatherDetails from "../components/WeatherDetails";
 import WeatherDisplay from '../components/WeatherDisplay'
-import { weatherIcons } from "../config/images"
 import { getWeatherData } from "../services/weatherAPI";
+import { setWeatherInfo } from "../features/weatherSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const WeatherScreen = ({ navigation }) => {
-    const [weatherInfo, setWeatherInfo] = useState({
-        city: "Select City",
-        temperature: "",
-        weatherIcon: "",
-        feelsLike: "",
-        windSpeed: "",
-        humidity: ""
-    })
 
+
+    const dispatch = useDispatch()
     const [response, setResponse] = useState({})
+    const weatherInfo = useSelector((state) => state.weather.value)
 
     const handleCityChange = async (city) => {
         const { data } = await getWeatherData(city)
 
-        setWeatherInfo({
-            city: city,
-            temperature: Math.floor(data.current.temp) + "°C",
-            weatherIcon: weatherIcons[data.current.weather[0].main],
-            feelsLike: "Feels like: " + Math.floor(data.current.feels_like) + "°C",
-            windSpeed: "Wind Speed: " + Math.floor(data.current.wind_speed) + " km/h",
-            humidity: "Humidity: " + data.current.humidity + "%"
-        });
+        dispatch(setWeatherInfo({ city, data }))
+
 
         setResponse(data)
     }
