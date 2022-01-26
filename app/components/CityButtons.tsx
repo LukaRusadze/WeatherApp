@@ -6,6 +6,7 @@ import {
 	Platform
 } from "react-native";
 import CustomBtn from "../components/CustomButton";
+import { useAppSelector } from "../config/hooks";
 
 interface IProps {
 	handleCityChange: Function;
@@ -13,7 +14,8 @@ interface IProps {
 
 const CityButtons = ({ handleCityChange }: IProps) => {
 
-	const [modalVisible, setModalVisible] = useState(false);
+	const currentCity = useAppSelector((state) => state.weather.value.city)
+	const [modalVisible, setModalVisible] = useState(currentCity === "Select City");
 
 	const cityButtonPressHandler = async (city: string) => {
 		handleCityChange(city);
