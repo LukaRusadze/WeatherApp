@@ -9,6 +9,7 @@ import {
 import CustomBtn from "../components/CustomButton";
 import WeatherDetails from "../components/WeatherDetails";
 import WeatherDisplay from '../components/WeatherDisplay'
+import CityButtons from "../components/CityButtons";
 import { getWeatherData } from "../services/weatherAPI";
 import { setWeatherInfo } from "../features/weatherSlice";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -38,22 +39,6 @@ const WeatherScreen = ({ navigation }: IProps) => {
             style={styles.background}
             source={require("../assets/weatherBackgrounds/Sunny.jpg")}
         >
-            <SafeAreaView style={styles.citySelection}>
-                <CustomBtn
-                    text="Tbilisi"
-                    onPress={() => handleCityChange("Tbilisi")}
-                />
-
-                <CustomBtn
-                    text="Kutaisi"
-                    onPress={() => handleCityChange("Kutaisi")}
-                />
-
-                <CustomBtn
-                    text="Batumi"
-                    onPress={() => handleCityChange("Batumi")}
-                />
-            </SafeAreaView>
 
             <View style={styles.weatherContainer}>
 
@@ -68,6 +53,7 @@ const WeatherScreen = ({ navigation }: IProps) => {
                 <WeatherDetails weatherInfo={weatherInfo} />
 
             </View>
+            <CityButtons handleCityChange={handleCityChange} />
         </ImageBackground>
     );
 };
@@ -76,13 +62,6 @@ const styles = StyleSheet.create({
     background: {
         alignItems: "center",
         flex: 1,
-    },
-
-    citySelection: {
-        width: 300,
-        justifyContent: "space-between",
-        marginTop: StatusBar.currentHeight! + 20,
-        flexDirection: "row",
     },
 
     weatherContainer: {

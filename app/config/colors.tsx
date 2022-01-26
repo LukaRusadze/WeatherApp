@@ -1,8 +1,8 @@
 interface IColors {
-  [key: string]: string
+	[key: string]: string
 }
 
 export const colors: IColors = {
-  primary: "#fff",
-  secondary: "#000",
+	primary: "#fff",
+	secondary: "#000",
 };
