@@ -1,4 +1,10 @@
-export const weatherIcons = {
+import { ImageProps } from "react-native";
+
+interface IWeatherIcons {
+    [key: string]: number
+}
+
+export const weatherIcons: IWeatherIcons = {
     Clear: require("../assets/weatherIcons/Clear.png"),
     Clouds: require("../assets/weatherIcons/Clouds.png"),
     Drizzle: require("../assets/weatherIcons/Drizzle.png"),

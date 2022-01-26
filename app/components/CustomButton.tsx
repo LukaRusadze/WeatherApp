@@ -1,10 +1,15 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, GestureResponderEvent } from "react-native";
 
-function CustomButton({ text, onPress }) {
+interface IProps {
+  text: string,
+  onPress: (event: GestureResponderEvent) => void,
+}
+
+function CustomButton({ text, onPress }: IProps) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.customBtn}>
-      <Text styles={styles.customBtnText}>{text}</Text>
+      <Text>{text}</Text>
     </TouchableOpacity>
   );
 }

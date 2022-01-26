@@ -1,41 +1,34 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
     ImageBackground,
     View,
     StyleSheet,
     StatusBar,
-    Text,
     SafeAreaView
 } from "react-native";
 import CustomBtn from "../components/CustomButton";
 import WeatherDetails from "../components/WeatherDetails";
 import WeatherDisplay from '../components/WeatherDisplay'
-import { weatherIcons } from "../config/images"
 import { getWeatherData } from "../services/weatherAPI";
+import { setWeatherInfo } from "../features/weatherSlice";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from '../../App'
+import { useAppDispatch, useAppSelector } from "../config/hooks";
 
-const WeatherScreen = ({ navigation }) => {
-    const [weatherInfo, setWeatherInfo] = useState({
-        city: "Select City",
-        temperature: "",
-        weatherIcon: "",
-        feelsLike: "",
-        windSpeed: "",
-        humidity: ""
-    })
+interface IProps {
+    navigation: StackNavigationProp<RootStackParamList, 'Weather'>;
+}
 
+const WeatherScreen = ({ navigation }: IProps) => {
+
+    const dispatch = useAppDispatch()
     const [response, setResponse] = useState({})
+    const weatherInfo = useAppSelector((state) => state.weather.value)
 
-    const handleCityChange = async (city) => {
+    const handleCityChange = async (city: string) => {
         const { data } = await getWeatherData(city)
 
-        setWeatherInfo({
-            city: city,
-            temperature: Math.floor(data.current.temp) + "°C",
-            weatherIcon: weatherIcons[data.current.weather[0].main],
-            feelsLike: "Feels like: " + Math.floor(data.current.feels_like) + "°C",
-            windSpeed: "Wind Speed: " + Math.floor(data.current.wind_speed) + " km/h",
-            humidity: "Humidity: " + data.current.humidity + "%"
-        });
+        dispatch(setWeatherInfo({ city, data }))
 
         setResponse(data)
     }
@@ -69,7 +62,7 @@ const WeatherScreen = ({ navigation }) => {
                 {weatherInfo.city != "Select City" ?
                     <CustomBtn
                         text="View More"
-                        onPress={() => navigation.navigate('SevenDayWeatherScreen', { response })} /> :
+                        onPress={() => navigation.navigate('SevenDayWeatherScreen', { response, title: weatherInfo.city })} /> :
                     <></>}
 
                 <WeatherDetails weatherInfo={weatherInfo} />
@@ -88,7 +81,7 @@ const styles = StyleSheet.create({
     citySelection: {
         width: 300,
         justifyContent: "space-between",
-        marginTop: StatusBar.currentHeight + 20,
+        marginTop: StatusBar.currentHeight! + 20,
         flexDirection: "row",
     },
 

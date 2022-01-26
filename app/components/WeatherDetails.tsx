@@ -1,7 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { IInitialState } from '../features/weatherSlice'
 
-const WeatherDetails = ({ weatherInfo }) => {
+interface IProps {
+    weatherInfo: IInitialState
+}
+
+const WeatherDetails = ({ weatherInfo }: IProps) => {
     return (
         <View style={styles.bottomBar}>
             <Text style={styles.smallInfo}>{weatherInfo.feelsLike}</Text>

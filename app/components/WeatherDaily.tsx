@@ -3,18 +3,18 @@ import { StyleSheet, Dimensions, View, Image, Text } from 'react-native';
 
 import { weatherIcons } from "../config/images"
 
-const formatDate = (unix_timestamp) => {
-    return new Date(unix_timestamp * 1000);
+const formatDate = (unix_timestamp: string): Date => {
+    return new Date(Number(unix_timestamp) * 1000);
 }
 
-const WeatherDaily = ({ item }) => {
+const WeatherDaily = ({ item }: any) => {
     var arrayOfWeekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
     return (
         <View style={styles.weatherDay} >
             <View style={styles.left}>
                 <Image style={styles.weatherIcon} source={weatherIcons[item.weather[0].main]} />
-                <View style={styles.date}>
+                <View>
                     <Text style={styles.dateText}>{formatDate(item.dt).toISOString().split('T')[0]}</Text>
                     <Text style={styles.dateText}>{arrayOfWeekdays[formatDate(item.dt).getDay()]}</Text>
                 </View>

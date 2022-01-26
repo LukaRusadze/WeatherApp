@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, StyleSheet, Text, Image } from 'react-native';
+import { IInitialState } from '../features/weatherSlice'
 
-const WeatherDisplay = ({ weatherInfo }) => {
+interface IProps {
+    weatherInfo: IInitialState
+}
+
+const WeatherDisplay = ({ weatherInfo }: IProps) => {
     return (
         <View style={styles.topBar}>
             <Text style={styles.cityText}>{weatherInfo.city}</Text>
             <Text style={styles.temperatureText}>{weatherInfo.temperature}</Text>
-            {weatherInfo.weatherIcon === "" ? <></> : <Image style={styles.weatherIcon} source={weatherInfo.weatherIcon} />}
+            {weatherInfo.weatherIcon === undefined ? <></> : <Image style={styles.weatherIcon} source={weatherInfo.weatherIcon} />}
         </View>
     );
 };

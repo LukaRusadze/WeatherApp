@@ -6,11 +6,16 @@ import {
   Image,
   View,
   TouchableOpacity,
-  StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { RootStackParamList } from '../../App'
+import { StackNavigationProp } from "@react-navigation/stack";
 
-const WelcomeScreen = ({ navigation }) => {
+interface IProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Welcome'>;
+}
+
+const WelcomeScreen = ({ navigation }: IProps) => {
   return (
     <ImageBackground
       style={styles.background}
