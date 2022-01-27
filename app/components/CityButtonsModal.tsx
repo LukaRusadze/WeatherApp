@@ -4,7 +4,9 @@ import {
 	StyleSheet,
 	Modal,
 	Platform,
-	ModalProps
+	ModalProps,
+	TouchableWithoutFeedback,
+	View
 } from "react-native";
 import CustomBtn from "./CustomButton";
 
@@ -26,7 +28,11 @@ const CityButtonsModal = ({ handleCityChange, visible, setModalVisible }: IProps
 				transparent={true}
 				animationType="slide"
 			>
-				<SafeAreaView style={styles.modalContent}>
+				<TouchableWithoutFeedback onPress={() => setModalVisible(false)} >
+					<View style={{ flex: 1 }}></View>
+				</TouchableWithoutFeedback>
+
+				<View style={styles.modalContent}>
 					<CustomBtn
 						text="Tbilisi"
 						style={styles.cityButton}
@@ -44,7 +50,7 @@ const CityButtonsModal = ({ handleCityChange, visible, setModalVisible }: IProps
 						style={styles.cityButton}
 						textStyle={styles.cityButtonText}
 						onPress={() => cityButtonPressHandler("Batumi")} />
-				</SafeAreaView>
+				</View>
 			</Modal>
 		</SafeAreaView>
 	);
