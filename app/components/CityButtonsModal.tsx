@@ -27,6 +27,7 @@ const CityButtonsModal = ({ handleCityChange, visible, setModalVisible }: IProps
 				visible={visible}
 				transparent={true}
 				animationType="slide"
+				onRequestClose={() => { setModalVisible(false); }}
 			>
 				<TouchableWithoutFeedback onPress={() => setModalVisible(false)} >
 					<View style={{ flex: 1 }}></View>
