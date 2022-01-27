@@ -3,30 +3,26 @@ import {
 	SafeAreaView,
 	StyleSheet,
 	Modal,
-	Platform
+	Platform,
+	ModalProps
 } from "react-native";
-import CustomBtn from "../components/CustomButton";
-import { useAppSelector } from "../config/hooks";
+import CustomBtn from "./CustomButton";
 
-interface IProps {
+interface IProps extends ModalProps {
 	handleCityChange: Function;
+	setModalVisible: Function
 }
 
-const CityButtons = ({ handleCityChange }: IProps) => {
-
-	const currentCity = useAppSelector((state) => state.weather.value.city)
-	const [modalVisible, setModalVisible] = useState(currentCity === "Select City");
-
+const CityButtonsModal = ({ handleCityChange, visible, setModalVisible }: IProps) => {
 	const cityButtonPressHandler = async (city: string) => {
-		handleCityChange(city);
+		await handleCityChange(city);
 		setModalVisible(false);
 	}
 
 	return (
 		<SafeAreaView style={styles.citySelection}>
-			<CustomBtn text="Change City" style={styles.cityChangeButton} onPress={() => setModalVisible(true)} />
 			<Modal
-				visible={modalVisible}
+				visible={visible}
 				transparent={true}
 				animationType="slide"
 			>
@@ -81,8 +77,5 @@ const styles = StyleSheet.create({
 		fontWeight: "500",
 		fontSize: Platform.OS === "ios" ? 17 : 15
 	},
-	cityChangeButton: {
-		marginBottom: Platform.OS == "ios" ? 0 : 10
-	}
 });
-export default CityButtons;
+export default CityButtonsModal;

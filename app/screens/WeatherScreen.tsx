@@ -4,12 +4,13 @@ import {
     View,
     StyleSheet,
     StatusBar,
-    SafeAreaView
+    SafeAreaView,
+    Platform
 } from "react-native";
 import CustomBtn from "../components/CustomButton";
 import WeatherDetails from "../components/WeatherDetails";
 import WeatherDisplay from '../components/WeatherDisplay'
-import CityButtons from "../components/CityButtons";
+import CityButtonsModal from "../components/CityButtonsModal";
 import { getWeatherData } from "../services/weatherAPI";
 import { setWeatherInfo } from "../features/weatherSlice";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -25,6 +26,9 @@ const WeatherScreen = ({ navigation }: IProps) => {
     const dispatch = useAppDispatch()
     const [response, setResponse] = useState({})
     const weatherInfo = useAppSelector((state) => state.weather.value)
+
+    const currentCity = weatherInfo.city
+    const [modalVisible, setModalVisible] = useState(currentCity === "Select City");
 
     const handleCityChange = async (city: string) => {
         const { data } = await getWeatherData(city)
@@ -53,7 +57,10 @@ const WeatherScreen = ({ navigation }: IProps) => {
                 <WeatherDetails weatherInfo={weatherInfo} />
 
             </View>
-            <CityButtons handleCityChange={handleCityChange} />
+
+            <CustomBtn text="Change City" style={styles.cityChangeButton} onPress={() => setModalVisible(true)} />
+            <CityButtonsModal handleCityChange={handleCityChange} visible={modalVisible} setModalVisible={setModalVisible} />
+
         </ImageBackground>
     );
 };
@@ -69,6 +76,10 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "space-evenly",
     },
+
+    cityChangeButton: {
+        marginBottom: Platform.OS == "ios" ? 0 : 10
+    }
 });
 
 export default WeatherScreen;
